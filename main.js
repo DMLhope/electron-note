@@ -10,10 +10,12 @@ app.on('ready',function(){
     //执行创建菜单的操作
     require('./main/menu.js');
     //创建窗口
-    mainwindow=new BrowserWindow({width:400,height:400});
+    mainwindow=new BrowserWindow({width:800,height:800});
     mainwindow.loadFile('index.html');//选择要打开的主页文件
     mainwindow.on('closed',()=>{//监听了一个关闭事件
         mainwindow=null;
     })
+    //开启渲染进程中的调试模式
+    mainwindow.webContents.openDevTools();
    
 });
