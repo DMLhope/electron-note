@@ -3,40 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <!-- import CSS -->
-  <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
+  <!-- <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css"> -->
+  <link rel="stylesheet" href="./bootstrap/bootstrap.min.css">
+  <script src="./bootstrap/jquery.slim.min.js"></script>
+  <script src="./bootstrap/popper.min.js"></script>
+  <script src="./bootstrap/bootstrap.min.js"></script>
+  <script src="./vue/dist/vue.js"></script>
 </head>
 <body>
-  <div id="app">
-    <el-collapse accordion>
-        <el-collapse-item>
-          <template slot="title">
-                <el-button type="success" icon="el-icon-check" size="mini" circle></el-button> 
-                <div>一致性 Consistency</div>
-            
-          </template>
-          <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
-          <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
-        </el-collapse-item>
-        <el-collapse-item title="反馈 Feedback">
-          <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
-          <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
-        </el-collapse-item>
-        <el-collapse-item title="效率 Efficiency">
-          <div>简化流程：设计简洁直观的操作流程；</div>
-          <div>清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；</div>
-          <div>帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。</div>
-        </el-collapse-item>
-        <el-collapse-item title="可控 Controllability">
-          <div>用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；</div>
-          <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
-        </el-collapse-item>
-      </el-collapse>
-      <!-- <el-button>Button</el-button> -->
+  <div class="container">
+    <!-- 提示 -->
+    <div class="alert alert-success alert-dismissible" id="close" v-if="seen">
+        <button type="button" class="close" data-dismiss="alert" v-on:click="close_dismiss" >&times;</button>
+        <strong>成功!</strong> 添加任务成功。
+    </div>
+    <!-- 卡片 -->
+    <div class="card">
+      <!-- 卡片头部 -->
+      <div class="card-header"  >
+        <div class="input-group  input-group-sm mx-auto" id="add">
+            <input type="text" class="form-control"  placeholder="在这添加" v-model="tag" >
+            <div class="input-group-append" >
+          <button type="button" class="btn btn-primary" v-on:click="add_tag">新增任务</button>
+            </div>
+        </div>
+      </div>
+      
+      <!-- 卡片内容 -->
+      <div class="card-body">
+
+          <div id="list">
+              <ul class="list-group">
+                <li class="list-group-item" v-for="todo in todos">
+                  <div v-on:click="add_tag">
+                  {{ todo.text }}
+                  <button type="button" class="close d-flex flex-row-reverse"  >&times;</button>
+                </div>
+                </li>
+              </ul>
+          </div>
+
+      </div> 
+
+    </div>
   </div>
 </body>
-  <!-- import Vue before Element -->
-  <script src="./vue/dist/vue.js"></script>
-  <script src="./element-ui/lib/index.js"></script>
-  <!-- <script src="./render/element.js"></script> -->
-  <script src="./render/vue.js"></script>
+<script>
+  //用户输入数据
+  
+  // 添加任务函数
+  var add=new Vue({
+    el:'#add',
+    data:{
+      tag: ''
+    },
+    methods: {
+      add_tag: function(){
+        list.todos.push({ text: this.tag });
+        close.seen=true;
+      }
+    }
+  });
+  // 关闭提示
+  var close = new Vue({
+    el: '#close',
+    data: {
+      seen: false
+    },
+    methods: {
+      close_dismiss: function () {
+        if (this.seen===true){
+          this.seen=false;
+        }
+      
+    }
+  }
+  });
+  // 任务数据列表
+  var list = new Vue({
+      el: '#list',
+      data: {
+        todos: [
+          { text: '1' },
+          { text: '学习 Vue' },
+          { text: '整个牛项目' }
+        ]
+      }
+    });
+
+    
+</script>
 </html>
