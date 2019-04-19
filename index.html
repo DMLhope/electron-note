@@ -1,56 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" >
+
 <head>
   <meta charset="UTF-8">
-  <!-- import CSS -->
-  <!-- <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css"> -->
-  <link rel="stylesheet" href="./bootstrap/bootstrap.min.css">
-  <script src="./bootstrap/jquery.slim.min.js"></script>
-  <script src="./bootstrap/popper.min.js"></script>
-  <script src="./bootstrap/bootstrap.min.js"></script>
-  <script src="./vue/dist/vue.js"></script>
+  <title>个人任务管理器</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-  <div class="container">
-    <!-- 提示 -->
-    <div class="alert alert-success alert-dismissible" id="close" v-if="seen">
-        <button type="button" class="close" data-dismiss="alert" v-on:click="close_dismiss" >&times;</button>
-        <strong>成功!</strong> 添加任务成功。
-    </div>
-    <!-- 卡片 -->
-    <div class="card">
-      <!-- 卡片头部 -->
-      <div class="card-header"  >
-        <div class="input-group  input-group-sm mx-auto" id="add">
-            <input type="text" class="form-control"  placeholder="在这添加" v-model="tag" >
-            <div class="input-group-append" >
-          <button type="button" class="btn btn-primary" v-on:click="add_tag">新增任务</button>
-            </div>
-        </div>
-      </div>
+<script src="./vue/dist/vue.js"></script>
+<script src="./element-ui/lib/index.js"></script>
+<div id="add">
+  <el-row :gutter="8" >
+  <el-col :span="18">
+  <el-input  v-model="tag"  v-on:keyup.enter.native="add_tag"></el-input>
+  </el-col>
+  <el-col :span="6" >
+  <el-button  icon="el-icon-edit" type="primary" v-on:click="add_tag">添加</el-button>
+  </el-col>
+  </el-row>
+</div>
+<div id="app">    
+<template>
+    
+  <el-table
+    :data="tableData"
+    style="width: 100%"
+    >
+    <el-table-column
+      label="任务"
+      prop="renwu"
+      >
       
-      <!-- 卡片内容 -->
-      <div class="card-body">
-
-          <div id="list">
-              <ul class="list-group">
-                <li class="list-group-item" v-for="todo in todos">
-                  <div v-on:click="add_tag">
-                  {{ todo.text }}
-                  <button type="button" class="close d-flex flex-row-reverse"  >&times;</button>
-                </div>
-                </li>
-              </ul>
-          </div>
-
-      </div> 
-
-    </div>
-  </div>
+    </el-table-column>
+    <el-table-column
+      fixed="right"
+      label="操作"
+      width="100">
+      <template slot-scope="scope">
+        <el-button
+          @click.native.prevent="deleteRow(scope.$index, tableData)"
+          type="primary"
+          icon="el-icon-check"
+          size="small" plain>完成
+        </el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+</template>
+</div>
 </body>
 <script>
-  //用户输入数据
-  
+  var app=new Vue( {
+    el:'#app',
+    methods: {
+      deleteRow(index, rows) {
+        rows.splice(index, 1);
+        this.tishi_finsh();
+      },
+      tishi_finsh() {
+        this.$message({
+          showClose: true,
+          message: '恭喜完成任务',
+          type: 'success',
+          duration:800
+        });
+      }
+    },
+    data:{
+      tableData: [{
+        renwu:'活着',
+      }] 
+    }
+  })
   // 添加任务函数
   var add=new Vue({
     el:'#add',
@@ -58,39 +80,21 @@
       tag: ''
     },
     methods: {
-      add_tag: function(){
-        list.todos.push({ text: this.tag });
-        close.seen=true;
+      add_tag(){
+        app.tableData.push({renwu:this.tag});
+        this.tag='';
+        this.tishi_add();
+      },
+      tishi_add() {
+        this.$message({
+          showClose: true,
+          message: '添加成功',
+          type: 'success',
+          duration:600
+        });
       }
     }
   });
-  // 关闭提示
-  var close = new Vue({
-    el: '#close',
-    data: {
-      seen: false
-    },
-    methods: {
-      close_dismiss: function () {
-        if (this.seen===true){
-          this.seen=false;
-        }
-      
-    }
-  }
-  });
-  // 任务数据列表
-  var list = new Vue({
-      el: '#list',
-      data: {
-        todos: [
-          { text: '1' },
-          { text: '学习 Vue' },
-          { text: '整个牛项目' }
-        ]
-      }
-    });
-
-    
+  
 </script>
 </html>

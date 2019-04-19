@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <!-- import CSS -->
+  <!-- <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css"> -->
+  <link rel="stylesheet" href="./bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
+  
+  <script src="./bootstrap/jquery.slim.min.js"></script>
+  <script src="./bootstrap/popper.min.js"></script>
+  <script src="./bootstrap/bootstrap.min.js"></script>
+  
+</head>
+<body>
+  
+  <div class="container" >
+    <!-- 提示 -->
+    <div class="alert alert-success alert-dismissible" id="close" v-if="seen">
+        <button type="button" class="close" data-dismiss="alert" v-on:click="close_dismiss" >&times;</button>
+        <strong>成功!</strong> 添加任务成功。
+    </div>
+    <!-- 卡片 -->
+    <div class="card">
+      <!-- 卡片头部 -->
+      <div class="card-header"  >
+        <div class="input-group  input-group mx-auto" id="add">
+            <input type="text" class="form-control"  placeholder="在这添加" v-model="tag" >
+            <div class="input-group-append" >
+          <button type="button" class="btn btn-primary" v-on:click="add_tag">新增任务</button>
+            </div>
+        </div>
+      </div>
+      
+      <!-- 卡片内容 -->
+      <div class="card-body">
+
+          <div id="list">
+              <ul class="list-group">
+                <li class="list-group-item" v-for="todo in todos">
+                  <div >
+                  {{ todo.text }}
+                  <button type="button" class="close d-flex flex-row-reverse" >&times;</button>
+                </div>
+                </li>
+              </ul>
+          </div>
+
+          <div id="html" v-html="kongjian">{{ kongjian}}</div>
+      </div> 
+
+    </div>
+  </div>
+</body>
+
+<script src="./vue/dist/vue.js"></script>
+<script>
+  new Vue({
+    el:'#app'
+  });
+  //用户输入数据
+  
+  // 添加任务函数
+  var add=new Vue({
+    el:'#add',
+    data:{
+      tag: ''
+    },
+    methods: {
+      add_tag: function(){
+        list.todos.push({ text: this.tag });
+        close.seen=true;
+      }
+    }
+  });
+  // 关闭提示
+  var close = new Vue({
+    el: '#close',
+    data: {
+      seen: false
+    },
+    methods: {
+      close_dismiss: function () {
+        if (this.seen===true){
+          this.seen=false;
+        }
+      
+    }
+  }
+  });
+  // 任务数据列表
+  var list = new Vue({
+      el: '#list',
+      data: {
+        todos: [
+          { text: '1' },
+          { text: '学习 Vue' },
+          { text: '整个牛项目' }
+        ]
+      }
+    });
+  
+  var html=new Vue({
+    el:'#html',
+    data:{
+      kongjian:'<button>测试</button>',
+    }
+  })
+    
+</script>
+</html>

@@ -1,9 +1,21 @@
+ //var Vue =require('vue');
+ //var ElementUI=require('element-ui')
+ //import ElementUI from 'element-ui';
+// import 'element-ui/lib/theme-chalk/index.css';
+// import App from './App.vue';
+
+// Vue.use(ElementUI);
+
+// new Vue({
+//   el: '#app',
+//   render: h => h(App)
+// });
+
 //electron对象的引用
 var electron = require('electron');
 var app=electron.app;
 //BrowserWindow类的引用
 var BrowserWindow=electron.BrowserWindow;
-
 var mainwindow=null;
 //监听应用准备完成的事件
 app.on('ready',function(){
