@@ -20,9 +20,9 @@ var mainwindow=null;
 //监听应用准备完成的事件
 app.on('ready',function(){
     //执行创建菜单的操作
-    require('./main/menu.js');
+    //require('./main/menu.js');
     //创建窗口
-    mainwindow=new BrowserWindow({width:400,height:600,frame: false});
+    mainwindow=new BrowserWindow({width:380,height:630,autoHideMenuBar:true});
     mainwindow.loadFile('index.html');//选择要打开的主页文件
     mainwindow.on('closed',()=>{//监听了一个关闭事件
         mainwindow=null;

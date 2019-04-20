@@ -13,7 +13,6 @@ cover: '../../../assets/img/20190416-1.jpg'
 
 ![大神牛批](./img/dashen.jpg)
 
-所以作为一个渣渣，我就写篇咱小白看的...
 # 正篇
 
 ## 简单介绍
@@ -160,16 +159,7 @@ npm install webpack
 
 ![electron_first](img/electron_first.png)
 
-## 休息
-至此一个最简单的electron应用就做好了，如果您跟着做到这里了，建议休息一下，喝杯茶啥的活动活动，放心本文不含任何的防不胜防，我会尽量做到代码粘到读者那就能用，请放心往下看。
-
-## 任务管理软件
-
-### 需求
-
-这里要做的是一个最基本的任务管理，那么最基本的需求就是添加任务和删除任务了。
-
-### 去掉上面的那行菜单栏（见图片）
+### 想去掉上面的那行菜单栏（见图片）
 
 ![去掉菜单栏](./img/menu.png)
 
@@ -216,13 +206,188 @@ Menu.setApplicationMenu(m);
 
 这样就成功了。
 
-## 制作网页
+## 休息
+至此一个最简单的electron应用就做好了，如果您跟着做到这里了，建议休息一下，喝杯茶啥的活动活动，放心本文不含任何的防不胜防，我会尽量做到代码粘到读者那就能用，请放心往下看。
+
+## 任务管理软件
+
+### 需求
+
+这里要做的是一个最基本的任务管理，那么最基本的需求就是添加任务和删除任务了。
+
+流程大概是这种感觉：
+
+![需求](img/need.png)
+
+## 正式开始
 
 之前介绍里讲了electron可以算是用了浏览器的技术来将网站封装成桌面应用，所以网页的制作占了很大的部分，接下来会用到的其他前端知识我都会写注释，目标是小白可以复刻出这个程序，用到的知识可以之后再补，但兴趣这东西是说没就没啊...
 
 ### 选择所需的技术
 
-这里选择的是
+这里选择的是`vue`框架以及`element-ui`这个ui组件
+
+### 准备工作
+
+首先下载`vue`和`element-ui`
+
+在当前目录下执行：
+
+```
+cnpm install vue --save
+cnpm install element-ui --save
+cp -r node_modules/_vue* ./vue
+cp -r node_modules/_element-ui* ./element-ui
+```
+
+这样在当前目录里就可以得到`element`和`vue`这两个文件夹
+
+当前的工作区应该是这样：
+
+![工作区](img/work.png)
+
+### 实现
+
+根据需求来的话需要一个输入框和一个显示区域，其他就是逻辑层面的对每一步操作进行数据绑定来实现想要的效果。
+废话不多说直接上代码，将`index.html`的内容修改为如下：
+
+```
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>个人任务管理</title>
+  <!-- 这里引用element-ui的样式 -->
+  <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
+  <!-- 定义一个样式用于 窗口的背景色 -->
+  <style>
+    .box {
+    background:linear-gradient(to right, #7f57ec 10%,#00b3ffb9 90%);
+    }
+  </style>
+</head>
+<!-- 这里调用了背景的样式 -->
+<body class="box" >
+<!-- 这里引用的是vue和element-ui组件的js文件，基本用于实现逻辑和element-ui的一些动态效果 -->
+<script src="./vue/dist/vue.js"></script>
+<script src="./element-ui/lib/index.js"></script>
+<!-- 这里调用了vue的一个类似于函数块一样的东西，我姑且是这样理解的，块名称为add-->
+<div id="add" >
+<!-- 这里就是一个输入框了，v-model是vue用来绑定数据的，tag是在add块里面定义的一个变量，placeholder="在这添加，回车结束"表示的是给用户的默认提示，
+v-on后面绑定的是事件，这里绑定了一个回车事件，当用户在这个输入框内输入回车时会触发add块里定义好的add_tag函数，函数会执行相应的数据操作 -->
+  <el-input  v-model="tag" placeholder="在这添加，回车结束" v-on:keyup.enter.native="add_tag" ></el-input>
+</div>
+<!-- 硬核空一行 -->
+<br>
+<!-- 于上面类似调用一个名为app的函数块 -->
+<div id="app">    
+<!-- 这里定义了一个表格，数据绑定的是app块里面的tabledata的这个数组对象，宽度设置为100%，label表示列的标题 -->
+  <el-table
+    :data="tableData"
+    style="width: 100%"
+    >
+    <el-table-column
+      label="任务"
+      prop="renwu"
+      >
+      
+    </el-table-column>
+    <el-table-column
+      fixed="right"
+      label="操作"
+      width="100">
+      <!-- 这里是完成按钮的实现，会帮助用户删除完成的那行数据 -->
+      <template slot-scope="scope">
+        <el-button
+          @click.native.prevent="deleteRow(scope.$index, tableData)"
+          type="primary"
+          icon="el-icon-check"
+          size="small" plain>完成
+        </el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+</div>
+
+</body>
+<script>
+  // 这里就是定义函数块的地方，el后表示的是这个块的名字，也就是能被id调用的东西
+  var app=new Vue( {
+    el:'#app',
+    methods: {
+      // 这是完成任务的函数
+      deleteRow(index, rows) {
+        rows.splice(index, 1);
+        // 调用了完成的提示
+        this.tishi_finsh();
+      },
+      // 定义了一个完成的提示信息，showclose表示可以被关闭，message表示信息，type其实是element-ui的样式，duration表示提示出现的时间以毫秒为单位，这里表示出现800毫秒后关闭
+      tishi_finsh() {
+        this.$message({
+          showClose: true,
+          message: '恭喜完成任务',
+          type: 'success',
+          duration:800
+        });
+      }
+    },
+    // 这里定义是任务的内容，每一次添加其实都是给这个数组里面添加对象
+    data:{
+      tableData: [{
+        renwu:'活着',
+      }] 
+    }
+  })
+  // 添加任务块
+  var add=new Vue({
+    el:'#add',
+    data:{
+      // 这个变量是和输入框的内容进行绑定的
+      tag: ''
+    },
+    methods: {
+      // 当这个函数触发时就把输入框的内容加到任务数据的数组里面去
+      add_tag(){
+        app.tableData.push({renwu:this.tag});
+        this.tag='';
+        this.tishi_add();
+      },
+      // 添加任务成功的提示框
+      tishi_add() {
+        this.$message({
+          showClose: true,
+          message: '添加成功',
+          type: 'success',
+          duration:500
+        });
+      }
+    }
+  });
+  
+</script>
+</html>
+```
+
+这时执行`electron .`的效果应该是这样的：
+
+![完成](img/wancheng.png)
+
+
+实现思路是差不多是这样的：
+
+![思路](img/silu.png)
+
+
+## 后记：
+
+参考文档：
+
+[VUE官方文档](https://cn.vuejs.org/v2/guide/)
+
+[element-ui官方文档](https://element.eleme.io/#/zh-CN/component/installation)
+
+[electron官方文档](https://electronjs.org/docs)
 
 
 
@@ -234,15 +399,3 @@ Menu.setApplicationMenu(m);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-我总觉得学习和秋裤挺像的，走上社会了，再也没有你妈逼你穿秋裤了，结果也没啥改变，你还是套上了秋裤，因为冷...

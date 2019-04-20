@@ -3,39 +3,32 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>个人任务管理器</title>
+  <title>个人任务管理</title>
+  <!-- 这里引用element-ui的样式 -->
   <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
-  
+  <!-- 定义一个样式用于 窗口的背景色 -->
   <style>
-     /* background: -webkit-linear-gradient(left, #ace, #f96); */
-    
     .box {
     background:linear-gradient(to right, #7f57ec 10%,#00b3ffb9 90%);
     }
-
-
   </style>
 </head>
-
+<!-- 这里调用了背景的样式 -->
 <body class="box" >
-  <!-- style="-webkit-app-region: drag" -->
+<!-- 这里引用的是vue和element-ui组件的js文件，基本用于实现逻辑和element-ui的一些动态效果 -->
 <script src="./vue/dist/vue.js"></script>
 <script src="./element-ui/lib/index.js"></script>
-
+<!-- 这里调用了vue的一个类似于函数块一样的东西，我姑且是这样理解的，块名称为add-->
 <div id="add" >
-  <el-row type="flex"  justify="space-between" :gutter="10">
-  <el-col :span="18">
-  <el-input  v-model="tag"  v-on:keyup.enter.native="add_tag"></el-input>
-  </el-col>
-  <el-col :span="6" >
-  <el-button  icon="el-icon-edit" type="primary" v-on:click="add_tag">添加</el-button>
-  </el-col>
-  </el-row>
+<!-- 这里就是一个输入框了，v-model是vue用来绑定数据的，tag是在add块里面定义的一个变量，placeholder="在这添加，回车结束"表示的是给用户的默认提示，
+v-on后面绑定的是事件，这里绑定了一个回车事件，当用户在这个输入框内输入回车时会触发add块里定义好的add_tag函数，函数会执行相应的数据操作 -->
+  <el-input  v-model="tag" placeholder="在这添加，回车结束" v-on:keyup.enter.native="add_tag" ></el-input>
 </div>
+<!-- 硬核空一行 -->
 <br>
+<!-- 于上面类似调用一个名为app的函数块 -->
 <div id="app">    
-
-  
+<!-- 这里定义了一个表格，数据绑定的是app块里面的tabledata的这个数组对象，宽度设置为100%，label表示列的标题 -->
   <el-table
     :data="tableData"
     style="width: 100%"
@@ -50,6 +43,7 @@
       fixed="right"
       label="操作"
       width="100">
+      <!-- 这里是完成按钮的实现，会帮助用户删除完成的那行数据 -->
       <template slot-scope="scope">
         <el-button
           @click.native.prevent="deleteRow(scope.$index, tableData)"
@@ -60,18 +54,21 @@
       </template>
     </el-table-column>
   </el-table>
-<!-- </template> -->
 </div>
 
 </body>
 <script>
+  // 这里就是定义函数块的地方，el后表示的是这个块的名字，也就是能被id调用的东西
   var app=new Vue( {
     el:'#app',
     methods: {
+      // 这是完成任务的函数
       deleteRow(index, rows) {
         rows.splice(index, 1);
+        // 调用了完成的提示
         this.tishi_finsh();
       },
+      // 定义了一个完成的提示信息，showclose表示可以被关闭，message表示信息，type其实是element-ui的样式，duration表示提示出现的时间以毫秒为单位，这里表示出现800毫秒后关闭
       tishi_finsh() {
         this.$message({
           showClose: true,
@@ -81,30 +78,34 @@
         });
       }
     },
+    // 这里定义是任务的内容，每一次添加其实都是给这个数组里面添加对象
     data:{
       tableData: [{
         renwu:'活着',
       }] 
     }
   })
-  // 添加任务函数
+  // 添加任务块
   var add=new Vue({
     el:'#add',
     data:{
+      // 这个变量是和输入框的内容进行绑定的
       tag: ''
     },
     methods: {
+      // 当这个函数触发时就把输入框的内容加到任务数据的数组里面去
       add_tag(){
         app.tableData.push({renwu:this.tag});
         this.tag='';
         this.tishi_add();
       },
+      // 添加任务成功的提示框
       tishi_add() {
         this.$message({
           showClose: true,
           message: '添加成功',
           type: 'success',
-          duration:600
+          duration:500
         });
       }
     }
