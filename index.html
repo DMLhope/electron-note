@@ -29,18 +29,18 @@ v-on后面绑定的是事件，这里绑定了一个回车事件，当用户在�
 <!-- 于上面类似调用一个名为app的函数块 -->
 <div id="app">    
 <!-- 这里定义了一个表格，数据绑定的是app块里面的tabledata的这个数组对象，宽度设置为100%，label表示列的标题 -->
-  <el-table
-    :data="tableData"
-    style="width: 100%"
-    >
-    <el-table-column
-      label="任务"
-      prop="renwu"
-      >
+  <el-table :data="tableData" style="width: 100%" v-on:row-dblclick="tishi_test">
+      <el-table-column type="expand" fit="false">
+    <template slot-scope="text" >
+          <el-input type="textarea"  size="large" v-model="text.row.neirong" :autosize="{ minRows: 2, maxRows: 3}" placeholder="请输入内容">         
+          </el-input>
+    </template>
+      </el-table-column>
+    <el-table-column label="任务" prop="renwu"  >
       
     </el-table-column>
     <el-table-column
-      fixed="right"
+     
       label="操作"
       width="100">
       <!-- 这里是完成按钮的实现，会帮助用户删除完成的那行数据 -->
@@ -76,12 +76,21 @@ v-on后面绑定的是事件，这里绑定了一个回车事件，当用户在�
           type: 'success',
           duration:800
         });
+      },
+      tishi_test() {
+        this.$message({
+          showClose: true,
+          message: 'test',
+          type: 'success',
+          duration:800
+        });
       }
     },
     // 这里定义是任务的内容，每一次添加其实都是给这个数组里面添加对象
     data:{
       tableData: [{
         renwu:'活着',
+        neirong:'',
       }] 
     }
   })
@@ -110,6 +119,7 @@ v-on后面绑定的是事件，这里绑定了一个回车事件，当用户在�
       }
     }
   });
+  
   
 </script>
 </html>
