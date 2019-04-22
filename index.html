@@ -9,15 +9,59 @@
   <!-- 定义一个样式用于 窗口的背景色 -->
   <style>
     .box {
-    background:linear-gradient(to right, #7f57ec 10%,#00b3ffb9 90%);
+      margin-left: 8px;
+      /* margin-top: 5px; */
+      margin-right: 8px;
     }
+    .duiqi {
+      margin-top: 4px;
+      margin-left: 4px;
+      margin-bottom: 4px;
+      -webkit-app-region: no-drag;
+    }
+    .top {
+      width: auto;
+      height: auto;
+      margin-left: 0px;
+      margin-top: 0px;
+      margin-right: 0px;
+      margin-bottom: 0px;
+      -webkit-app-region: drag;
+      /* background-color: midnightblue; */
+      background-image:-webkit-linear-gradient(top,rgb(65, 59, 59),rgb(34, 31, 31));
+      /* border-radius: 10px 10px 0px 0px; */
+      /* background-image: linear-gradient(135deg,#8BC6EC 0%,#9599E2 100%); */
+
+    }
+    body{
+      width: 100%;
+      height: 100%;
+      margin-left: 0;
+      margin-top: 0;
+      background:linear-gradient(to right, #7f57ec 10%,#00b3ffb9 90%);
+      /* background-color:transparent; */
+    }
+    .tuozhuai{
+      -webkit-app-region: drag;
+      width: 200px;
+      height: 10px;
+    }
+    
   </style>
 </head>
 <!-- 这里调用了背景的样式 -->
-<body class="box" >
+<body >
 <!-- 这里引用的是vue和element-ui组件的js文件，基本用于实现逻辑和element-ui的一些动态效果 -->
 <script src="./vue/dist/vue.js"></script>
 <script src="./element-ui/lib/index.js"></script>
+<!-- 这里期望给这个界面加一个顶栏来顶替掉原生的顶栏 -->
+
+<!-- <div id="top" class="top">
+  <el-button  class="duiqi" type="danger" size="mini" icon="el-icon-close" circle></el-button>
+  
+</div> -->
+<br>
+<div class="box">
 <!-- 这里调用了vue的一个类似于函数块一样的东西，我姑且是这样理解的，块名称为add-->
 <div id="add" >
 <!-- 这里就是一个输入框了，v-model是vue用来绑定数据的，tag是在add块里面定义的一个变量，placeholder="在这添加，回车结束"表示的是给用户的默认提示，
@@ -30,12 +74,14 @@ v-on后面绑定的是事件，这里绑定了一个回车事件，当用户在�
 <div id="app">    
 <!-- 这里定义了一个表格，数据绑定的是app块里面的tabledata的这个数组对象，宽度设置为100%，label表示列的标题 -->
   <el-table :data="tableData" style="width: 100%" v-on:row-dblclick="tishi_test">
-      <el-table-column type="expand" fit="false">
+    <!-- 一个放弃的思路，在任务下方添加文本域 -->
+    <!-- 这个方法有自动缩回的bug -->
+      <!-- <el-table-column type="expand" fit="false">
     <template slot-scope="text" >
           <el-input type="textarea"  size="large" v-model="text.row.neirong" :autosize="{ minRows: 2, maxRows: 3}" placeholder="请输入内容">         
           </el-input>
     </template>
-      </el-table-column>
+      </el-table-column> -->
     <el-table-column label="任务" prop="renwu"  >
       
     </el-table-column>
@@ -55,9 +101,12 @@ v-on后面绑定的是事件，这里绑定了一个回车事件，当用户在�
     </el-table-column>
   </el-table>
 </div>
-
+</div>
 </body>
 <script>
+  var top=new Vue({
+    el:'#top',
+  });
   // 这里就是定义函数块的地方，el后表示的是这个块的名字，也就是能被id调用的东西
   var app=new Vue( {
     el:'#app',

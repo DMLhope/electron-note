@@ -22,7 +22,7 @@ app.on('ready',function(){
     //执行创建菜单的操作
     //require('./main/menu.js');
     //创建窗口
-    mainwindow=new BrowserWindow({width:380,height:630,autoHideMenuBar:true});
+    mainwindow=new BrowserWindow({width:380,height:630,autoHideMenuBar:true,resizable:false ,darkTheme:true});//frame: false
     mainwindow.loadFile('index.html');//选择要打开的主页文件
     mainwindow.on('closed',()=>{//监听了一个关闭事件
         mainwindow=null;
